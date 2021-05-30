@@ -1,0 +1,37 @@
+version: "3.3"
+services:
+  server:
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT}
+        reservations:
+          memory: ${MEMORY_RESERVATIONS}
+    image: vote:dev
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    command:
+      - /bin/bash
+      - -c
+      - |
+        sleep 7200
+    volumes:
+      - ../..:/app
+      - /app/.env
+      - /app/node_modules
+    environment:
+      - MONEY
+      - VOTE_COUNT
+      - SOTA_ID
+      - VOTE_CONTRACT_ADDRESS
+      - USDC_CONTRACT_ADDRESS
+      - PRIVATE_KEY1
+      - PRIVATE_KEY2
+      - PRIVATE_KEY3
+      - PRIVATE_KEY4
+      - PRIVATE_KEY5
+      - PRIVATE_KEY6
+      - PRIVATE_KEY7
+      - PRIVATE_KEY8
+    restart: always
