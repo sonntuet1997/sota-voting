@@ -34,7 +34,7 @@ const formatEther = (balance) => {
 
 const bep20abi = JSON.parse(fs.readFileSync('bep20abi.json'))
 
-const adminWallet = new ethers.Wallet(PRIVATE_KEY1).connect(provider)
+const adminWallet = new ethers.Wallet(PRIVATE_KEY4).connect(provider)
 
 const USDCContract = new ethers.Contract(USDC_CONTRACT_ADDRESS, bep20abi)
 
