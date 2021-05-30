@@ -1,4 +1,4 @@
-const {ethers, BigNumber} = require('ethers')
+const { ethers, BigNumber } = require('ethers')
 const fs = require('fs')
 
 require('dotenv').config()
@@ -10,10 +10,10 @@ const {
     SOTA_ID,
     VOTE_COUNT,
     MONEY,
+    PRIVATE_KEY,
     PRIVATE_KEY1,
     PRIVATE_KEY2,
     PRIVATE_KEY3,
-    PRIVATE_KEY4,
 } = process.env
 
 const provider = new ethers.providers.getDefaultProvider(
@@ -34,7 +34,7 @@ const formatEther = (balance) => {
 
 const bep20abi = JSON.parse(fs.readFileSync('bep20abi.json'))
 
-const adminWallet = new ethers.Wallet(PRIVATE_KEY2).connect(provider)
+const adminWallet = new ethers.Wallet(PRIVATE_KEY1).connect(provider)
 
 const USDCContract = new ethers.Contract(USDC_CONTRACT_ADDRESS, bep20abi)
 
@@ -126,11 +126,13 @@ const ultimate = async () => {
     console.log(`USDC: ${await getUSDCBalance(adminWallet)}`)
     console.log('--------------------------')
     console.log('TRANSFER TO CLONE')
-    const transBNB = await transferBNB(adminWallet, cloneWallet.address, '0.001')
-    console.log(transBNB)
+    console.log('Transfering BNB...');
+    const transBNB = await transferBNB(adminWallet, cloneWallet.address, '0.000767')
+    // console.log(transBNB)
     console.log(`transBNB hash: ${transBNB.hash}`)
+    console.log('Transfering USDC...');
     const transUSDC = await transferUSDC(adminWallet, cloneWallet.address, MONEY)
-    console.log(transUSDC)
+    // console.log(transUSDC)
     console.log(`transUSDC hash: ${transUSDC.hash}`)
     while (1) {
         await sleep(5000)
@@ -148,7 +150,8 @@ const ultimate = async () => {
     console.log('--------------------------')
     console.log('APPROVE VOTE CONTRACT TO USE USDC')
     const approve = await approveUSDC(cloneWallet, VOTE_CONTRACT_ADDRESS, MONEY)
-    console.log(approve)
+    console.log('Approving...');
+    // console.log(approve)
     console.log(approve.hash)
     while (1) {
         await sleep(5000)
@@ -159,8 +162,10 @@ const ultimate = async () => {
         }
     }
     console.log('--------------------------')
+    console.log('VOTE FOR SOTA');
+    console.log('Voting...');
     const votee = await vote(cloneWallet)
-    console.log(votee)
+    // console.log(votee)
     console.log(votee.hash)
     while (1) {
         await sleep(5000)
@@ -171,27 +176,27 @@ const ultimate = async () => {
         }
     }
     console.log('--------------------------')
-    console.log('TRANSFER BACK MONEY TO MASTER')
-    const cloneBalance = await getBNBBalance(cloneWallet)
-    console.log(`BNB: ${cloneBalance}`)
-    const back = await cloneWallet.sendTransaction({
-        to: adminWallet.address,
-        value: ethers.utils
-            .parseUnits(cloneBalance, 'ether')
-            .sub(ethers.utils.parseUnits((5 * 21000).toString(), 'gwei')),
-        gasPrice: ethers.utils.parseUnits('5', 'gwei'),
-        gasLimit: BigNumber.from('21000'),
-    })
-    console.log(back)
-    while (1) {
-        await sleep(5000)
-        let resTx = await getTransaction(back.hash)
-        if (resTx.blockNumber) {
-            console.log('transfer back success')
-            break
-        }
-    }
-    console.log('--------------------------')
+    // console.log('TRANSFER BACK MONEY TO MASTER')
+    // const cloneBalance = await getBNBBalance(cloneWallet)
+    // console.log(`BNB: ${cloneBalance}`)
+    // const back = await cloneWallet.sendTransaction({
+    //   to: adminWallet.address,
+    //   value: ethers.utils
+    //     .parseUnits(cloneBalance, 'ether')
+    //     .sub(ethers.utils.parseUnits((5 * 21000).toString(), 'gwei')),
+    //   gasPrice: ethers.utils.parseUnits('5', 'gwei'),
+    //   gasLimit: BigNumber.from('21000'),
+    // })
+    // console.log(back)
+    // while (1) {
+    //   await sleep(5000)
+    //   let resTx = await getTransaction(back.hash)
+    //   if (resTx.blockNumber) {
+    //     console.log('transfer back success')
+    //     break
+    //   }
+    // }
+    // console.log('--------------------------')
     console.log('GET MASTER BALANCE')
     console.log(`BNB: ${await getBNBBalance(adminWallet)}`)
     console.log(`USDC: ${await getUSDCBalance(adminWallet)}`)
